@@ -16,11 +16,11 @@
         android:textSize="20sp"
         tools:text="Title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/imageView"
+        app:layout_constraintStart_toEndOf="@id/imageDeal"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imageDeal"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="8dp"
@@ -39,7 +39,7 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/tvPrice"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/imageView"
+        app:layout_constraintStart_toEndOf="@id/imageDeal"
         app:layout_constraintTop_toBottomOf="@id/tvTitle"
         tools:text="Description" />
 

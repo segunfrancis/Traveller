@@ -158,13 +158,15 @@ public class DealActivity extends AppCompatActivity {
     }
 
     private void showImage(String url) {
-        // Getting the width of the device
-        int width = Resources.getSystem().getDisplayMetrics().widthPixels;
-        Picasso.get()
-                .load(url)
-                .resize(width, width * 2 / 3)
-                .centerCrop()
-                .into(imageView);
+        if (url != null && !url.isEmpty()) {
+            // Getting the width of the device
+            int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+            Picasso.get()
+                    .load(url)
+                    .resize(width, width * 2 / 3)
+                    .centerCrop()
+                    .into(imageView);
+        }
     }
 
 }
