@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".InsertActivity">
+    tools:context=".DealActivity">
 
 
     <EditText
@@ -39,8 +39,8 @@
         android:layout_marginStart="@dimen/text_margin_standard"
         android:layout_marginTop="@dimen/text_margin_standard"
         android:layout_marginEnd="@dimen/text_margin_standard"
-        android:text="@string/description_hint"
+        android:hint="@string/description_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPrice" />
+        app:layout_constraintTop_toBottomOf="@id/txtPrice" />
 </android.support.constraint.ConstraintLayout>

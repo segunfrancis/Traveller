@@ -1,5 +1,6 @@
 package com.android.traveller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -27,7 +28,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
     private ChildEventListener mChildEventListener;
 
     public DealAdapter() {
-        FirebaseUtil.openFbReference("travelDeals");
+        //FirebaseUtil.openFbReference("travelDeals", activity.getParent());
         mFirebaseDatabase = FirebaseUtil.mFirebaseDatabase;
         mDatabaseReference = FirebaseUtil.mDatabaseReference;
         deals = FirebaseUtil.mDeals;
@@ -100,7 +101,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
         public void bind(TravelDeal deal) {
             tvTitle.setText(deal.getTitle());
             tvDescription.setText(deal.getDescription());
-            tvPrice.setText(deal.getTitle());
+            tvPrice.setText(deal.getPrice());
         }
 
         @Override
@@ -108,7 +109,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
             int position = getAdapterPosition();
             Log.d("Click ", String.valueOf(position));
             TravelDeal selectedDeal = deals.get(position);
-            Intent intent = new Intent(v.getContext(), InsertActivity.class);
+            Intent intent = new Intent(v.getContext(), DealActivity.class);
             intent.putExtra("Deal", selectedDeal);
             v.getContext().startActivity(intent);
         }

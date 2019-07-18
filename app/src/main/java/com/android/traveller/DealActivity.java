@@ -12,26 +12,23 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class InsertActivity extends AppCompatActivity {
-
+public class DealActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
-    private EditText txtTitle, txtDescription, txtPrice;
-    private TravelDeal deal;
+    EditText txtTitle;
+    EditText txtDescription;
+    EditText txtPrice;
+    TravelDeal deal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert);
-
-        FirebaseUtil.openFbReference("travelDeals");
         mFirebaseDatabase = FirebaseUtil.mFirebaseDatabase;
         mDatabaseReference = FirebaseUtil.mDatabaseReference;
-
-        txtTitle = findViewById(R.id.txtTitle);
-        txtDescription = findViewById(R.id.txtDescription);
-        txtPrice = findViewById(R.id.txtPrice);
-
+        txtTitle = (EditText) findViewById(R.id.txtTitle);
+        txtDescription = (EditText) findViewById(R.id.txtDescription);
+        txtPrice = (EditText) findViewById(R.id.txtPrice);
         Intent intent = getIntent();
         TravelDeal deal = (TravelDeal) intent.getSerializableExtra("Deal");
         if (deal == null) {
@@ -48,24 +45,35 @@ public class InsertActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.save_menu:
                 saveDeal();
-                Toast.makeText(this, "Deal Saved!", Toast.LENGTH_SHORT).show();
-                clear();
+                Toast.makeText(this, "Deal saved", Toast.LENGTH_LONG).show();
+                clean();
                 backToList();
                 return true;
             case R.id.delete_menu:
-                Toast.makeText(this, "Deal Deleted", Toast.LENGTH_SHORT).show();
                 deleteDeal();
+                Toast.makeText(this, "Deal Deleted", Toast.LENGTH_LONG).show();
                 backToList();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+
         }
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.save_menu, menu);
+        if (FirebaseUtil.isAdmin) {
+            menu.findItem(R.id.delete_menu).setVisible(true);
+            menu.findItem(R.id.save_menu).setVisible(true);
+            enableEditTexts(true);
+        } else {
+            menu.findItem(R.id.delete_menu).setVisible(false);
+            menu.findItem(R.id.save_menu).setVisible(false);
+            enableEditTexts(false);
+        }
         return true;
     }
 
@@ -74,10 +82,8 @@ public class InsertActivity extends AppCompatActivity {
         deal.setDescription(txtDescription.getText().toString());
         deal.setPrice(txtPrice.getText().toString());
         if (deal.getId() == null) {
-            // Creating a new node
             mDatabaseReference.push().setValue(deal);
         } else {
-            // Editing an existing node
             mDatabaseReference.child(deal.getId()).setValue(deal);
         }
     }
@@ -88,6 +94,7 @@ public class InsertActivity extends AppCompatActivity {
             return;
         }
         mDatabaseReference.child(deal.getId()).removeValue();
+
     }
 
     private void backToList() {
@@ -95,10 +102,16 @@ public class InsertActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void clear() {
+    private void clean() {
         txtTitle.setText("");
-        txtDescription.setText("");
         txtPrice.setText("");
+        txtDescription.setText("");
         txtTitle.requestFocus();
+    }
+
+    private void enableEditTexts(boolean isEnabled) {
+        txtTitle.setEnabled(isEnabled);
+        txtDescription.setEnabled(isEnabled);
+        txtPrice.setEnabled(isEnabled);
     }
 }
