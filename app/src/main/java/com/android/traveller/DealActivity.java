@@ -1,6 +1,7 @@
 package com.android.traveller;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 public class DealActivity extends AppCompatActivity {
     private static final int PICTURE_RESULT = 42;
@@ -49,6 +51,8 @@ public class DealActivity extends AppCompatActivity {
         txtTitle.setText(deal.getTitle());
         txtDescription.setText(deal.getDescription());
         txtPrice.setText(deal.getPrice());
+        showImage(deal.getImageUrl());
+
         Button btnImage = findViewById(R.id.btnImage);
         btnImage.setOnClickListener(view -> {
             Intent imageIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -106,7 +110,10 @@ public class DealActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+                    // Stores image in firebase storage
                     deal.setImageUrl(url);
+                    // Loads image to imageView
+                    showImage(url);
                 }
             });
         }
@@ -149,4 +156,15 @@ public class DealActivity extends AppCompatActivity {
         txtDescription.setEnabled(isEnabled);
         txtPrice.setEnabled(isEnabled);
     }
+
+    private void showImage(String url) {
+        // Getting the width of the device
+        int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+        Picasso.get()
+                .load(url)
+                .resize(width, width * 2 / 3)
+                .centerCrop()
+                .into(imageView);
+    }
+
 }
