@@ -3,9 +3,11 @@ package com.android.traveller;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -110,8 +113,12 @@ public class DealActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+                    String pictureName = taskSnapshot.getStorage().getPath();
                     // Stores image in firebase storage
                     deal.setImageUrl(url);
+                    deal.setImageName(pictureName);
+                    Log.d("Url: ", url);
+                    Log.d("Name", pictureName);
                     // Loads image to imageView
                     showImage(url);
                 }
@@ -136,7 +143,11 @@ public class DealActivity extends AppCompatActivity {
             return;
         }
         mDatabaseReference.child(deal.getId()).removeValue();
-
+        if (deal.getImageName() != null && !deal.getImageName().isEmpty()) {
+            StorageReference picRef = FirebaseUtil.mStorage.getReference().child(deal.getImageName());
+            picRef.delete().addOnSuccessListener(aVoid -> Log.d("Delete Image", "Image Successfully Deleted"))
+                    .addOnFailureListener(e -> Log.d("Delete Image", e.getMessage()));
+        }
     }
 
     private void backToList() {
