@@ -81,9 +81,7 @@ public class DealActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-
         }
-
     }
 
     @Override
@@ -111,19 +109,16 @@ public class DealActivity extends AppCompatActivity {
             Uri imageUri = data.getData();
             StorageReference ref = FirebaseUtil.mStorageRef.child(imageUri.getLastPathSegment());
             // Upload to firebase
-            ref.putFile(imageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
-                    String pictureName = taskSnapshot.getStorage().getPath();
-                    // Stores image in firebase storage
-                    deal.setImageUrl(url);
-                    deal.setImageName(pictureName);
-                    Log.d("Url: ", url);
-                    Log.d("Name", pictureName);
-                    // Loads image to imageView
-                    showImage(url);
-                }
+            ref.putFile(imageUri).addOnSuccessListener(this, taskSnapshot -> {
+                String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+                String pictureName = taskSnapshot.getStorage().getPath();
+                // Stores image in firebase storage
+                deal.setImageUrl(url);
+                deal.setImageName(pictureName);
+                Log.d("Url: ", url);
+                Log.d("Name", pictureName);
+                // Loads image to imageView
+                showImage(url);
             });
         }
     }
@@ -133,8 +128,10 @@ public class DealActivity extends AppCompatActivity {
         deal.setDescription(txtDescription.getText().toString());
         deal.setPrice(txtPrice.getText().toString());
         if (deal.getId() == null) {
+            // Creating a new entry
             mDatabaseReference.push().setValue(deal);
         } else {
+            // Updating an existing entry
             mDatabaseReference.child(deal.getId()).setValue(deal);
         }
     }
@@ -181,5 +178,4 @@ public class DealActivity extends AppCompatActivity {
                     .into(imageView);
         }
     }
-
 }
