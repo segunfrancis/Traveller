@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -110,7 +111,11 @@ public class DealActivity extends AppCompatActivity {
             StorageReference ref = FirebaseUtil.mStorageRef.child(imageUri.getLastPathSegment());
             // Upload to firebase
             ref.putFile(imageUri).addOnSuccessListener(this, taskSnapshot -> {
-                String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                while (!uriTask.isSuccessful()) ;
+                Uri downloadUrl = uriTask.getResult();
+                String url = downloadUrl.toString();
+                //String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
                 String pictureName = taskSnapshot.getStorage().getPath();
                 // Stores image in firebase storage
                 deal.setImageUrl(url);
@@ -143,6 +148,7 @@ public class DealActivity extends AppCompatActivity {
         }
         mDatabaseReference.child(deal.getId()).removeValue();
         if (deal.getImageName() != null && !deal.getImageName().isEmpty()) {
+            FirebaseUtil.connectStorage();
             StorageReference picRef = FirebaseUtil.mStorage.getReference().child(deal.getImageName());
             picRef.delete().addOnSuccessListener(aVoid -> Log.d("Delete Image", "Image Successfully Deleted"))
                     .addOnFailureListener(e -> Log.d("Delete Image", e.getMessage()));
