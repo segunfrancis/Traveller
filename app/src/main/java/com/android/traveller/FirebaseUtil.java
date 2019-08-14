@@ -1,14 +1,11 @@
 package com.android.traveller;
 
-import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -20,7 +17,6 @@ import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.text.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
