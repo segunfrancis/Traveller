@@ -57,6 +57,7 @@ public class ListActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         FirebaseUtil.detachListener();
+        showMenu();
     }
 
     @Override
@@ -68,6 +69,7 @@ public class ListActivity extends AppCompatActivity {
         rvDeals.setAdapter(adapter);
         rvDeals.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         FirebaseUtil.attachListener();
+        showMenu();
     }
 
     public void showMenu() {

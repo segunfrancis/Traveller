@@ -25,15 +25,13 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
 
     private ArrayList<TravelDeal> deals;
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
-    private ChildEventListener mChildEventListener;
 
     public DealAdapter() {
         //FirebaseUtil.openFbReference("travelDeals", activity.getParent());
         mFirebaseDatabase = FirebaseUtil.mFirebaseDatabase;
-        mDatabaseReference = FirebaseUtil.mDatabaseReference;
+        DatabaseReference databaseReference = FirebaseUtil.mDatabaseReference;
         this.deals = FirebaseUtil.mDeals;
-        mChildEventListener = new ChildEventListener() {
+        ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 TravelDeal td = dataSnapshot.getValue(TravelDeal.class);
@@ -64,7 +62,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
 
             }
         };
-        mDatabaseReference.addChildEventListener(mChildEventListener);
+        databaseReference.addChildEventListener(childEventListener);
     }
 
     @NonNull
@@ -92,7 +90,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
         TextView tvPrice;
         ImageView imageDeal;
 
-        public DealViewHolder(@NonNull View itemView) {
+        DealViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvDescription = itemView.findViewById(R.id.tvDescription);
@@ -101,7 +99,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
             itemView.setOnClickListener(this);
         }
 
-        public void bind(TravelDeal deal) {
+        private void bind(TravelDeal deal) {
             tvTitle.setText(deal.getTitle());
             tvDescription.setText(deal.getDescription());
             tvPrice.setText(deal.getPrice());

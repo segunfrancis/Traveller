@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -115,7 +116,6 @@ public class DealActivity extends AppCompatActivity {
                 while (!uriTask.isSuccessful()) ;
                 Uri downloadUrl = uriTask.getResult();
                 String url = downloadUrl.toString();
-                //String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
                 String pictureName = taskSnapshot.getStorage().getPath();
                 // Stores image in firebase storage
                 deal.setImageUrl(url);
@@ -135,9 +135,11 @@ public class DealActivity extends AppCompatActivity {
         if (deal.getId() == null) {
             // Creating a new entry
             mDatabaseReference.push().setValue(deal);
+            FirebaseUtil.isAdmin = true;
         } else {
             // Updating an existing entry
             mDatabaseReference.child(deal.getId()).setValue(deal);
+            FirebaseUtil.isAdmin = true;
         }
     }
 
