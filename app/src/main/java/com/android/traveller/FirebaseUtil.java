@@ -1,20 +1,29 @@
 package com.android.traveller;
 
+import android.content.Context;
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class FirebaseUtil {
@@ -71,7 +80,7 @@ public class FirebaseUtil {
                 RC_SIGN_IN);
     }
 
-    private static void checkAdmin(String uid) {
+    public static void checkAdmin(String uid) {
         FirebaseUtil.isAdmin = false;
         DatabaseReference ref = mFirebaseDatabase.getReference().child("administrators")
                 .child(uid);
@@ -117,5 +126,21 @@ public class FirebaseUtil {
     public static void connectStorage () {
         mStorage = FirebaseStorage.getInstance();
         mStorageRef = mStorage.getReference().child("deals_pictures");
+    }
+
+    public static void checkPhoneManufacturer() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("manufacturer", Build.MANUFACTURER);
+        FirebaseFunctions.getInstance()
+                .getHttpsCallable("uppercaseDeviceName")
+                .call(hashMap)
+                .continueWith((Continuation<HttpsCallableResult, Object>) task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(caller, "Manufacturer is: " + task.getResult().getData(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(caller, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                });
     }
 }

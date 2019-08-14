@@ -18,6 +18,8 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
+        FirebaseUtil.checkPhoneManufacturer();
     }
 
     @Override
@@ -74,5 +76,13 @@ public class ListActivity extends AppCompatActivity {
 
     public void showMenu() {
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (FirebaseUtil.mFirebaseAuth.getUid() != null) {
+            FirebaseUtil.checkAdmin(FirebaseUtil.mFirebaseAuth.getUid());
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 }
